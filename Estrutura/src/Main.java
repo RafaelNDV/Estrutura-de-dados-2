@@ -1,64 +1,58 @@
 public class Main {
     public static void main(String[] args) {
-        Arvore arvore = new Arvore();
+        ArvoreBusca arvore = new ArvoreBusca();
 
-        // Criando nós
-        No n10 = new No(10);
-        No n5 = new No(5);
-        No n15 = new No(15);
-        No n3 = new No(3);
-        No n7 = new No(7);
-        No n12 = new No(12);
-        No n18 = new No(18);
+        // Inserindo elementos
+        arvore.adicionarElemento(50);
+        arvore.adicionarElemento(30);
+        arvore.adicionarElemento(70);
+        arvore.adicionarElemento(20);
+        arvore.adicionarElemento(40);
+        arvore.adicionarElemento(60);
+        arvore.adicionarElemento(80);
 
-        // Adicionando na árvore
-        arvore.adicionar_esquerda(n10, null); // raiz
-        arvore.adicionar_esquerda(n5, n10);
-        arvore.adicionar_direita(n15, n10);
-        arvore.adicionar_esquerda(n3, n5);
-        arvore.adicionar_direita(n7, n5);
-        arvore.adicionar_esquerda(n12, n15);
-        arvore.adicionar_direita(n18, n15);
+        // Exibir árvore em ordem
+        System.out.println("Árvore em ordem (in-order):");
+        imprimirEmOrdem(arvore.getRaiz());
+        System.out.println();
 
-        System.out.println("Árvore inicial (Varredura em largura):");
-        arvore.varredura_largura().imprimir();  // Esperado: 10 5 15 3 7 12 18
-        System.out.println("-------------------------");
+        // Buscar elementos
+        System.out.println("\n--- Teste de busca ---");
+        No no40 = arvore.buscar_elemento(new No(40));
+        No no60 = arvore.buscar_elemento(new No(60));
+        No no100 = arvore.buscar_elemento(new No(100)); // não existe
 
-        // Testando busca
-        System.out.println("Buscando elemento 7:");
-        No buscado = arvore.buscar_elemento(7);
-        System.out.println(buscado != null ? "Encontrado: " + buscado.getElemento_armazenado() : "Não encontrado");
-        System.out.println("-------------------------");
+        System.out.println("Buscando 40 -> " + (no40 != null ? "encontrado" : "não encontrado"));
+        System.out.println("Buscando 60 -> " + (no60 != null ? "encontrado" : "não encontrado"));
+        System.out.println("Buscando 100 -> " + (no100 != null ? "encontrado" : "não encontrado"));
 
-        // Remoção de nó folha
-        System.out.println("Removendo nó folha (3):");
-        arvore.remover_elemento(3);
-        System.out.println("Varredura em largura após remoção:");
-        arvore.varredura_largura().imprimir();  // Esperado: 10 5 15 7 12 18
-        System.out.println("-------------------------");
+        // Buscar pai
+        System.out.println("\n--- Teste buscaPai ---");
+        No pai40 = arvore.buscaPai(new No(40));
+        No pai20 = arvore.buscaPai(new No(20));
+        No pai50 = arvore.buscaPai(new No(50)); // raiz não tem pai
 
-        // Remoção de nó com 1 filho
-        System.out.println("Removendo nó com 1 filho (12):");
-        arvore.remover_elemento(12);
-        System.out.println("Varredura em largura após remoção:");
-        arvore.varredura_largura().imprimir();  // Esperado: 10 5 15 7 18
-        System.out.println("-------------------------");
+        System.out.println("Pai de 40: " + (pai40 != null ? pai40.getElemento_armazenado() : "null"));
+        System.out.println("Pai de 20: " + (pai20 != null ? pai20.getElemento_armazenado() : "null"));
+        System.out.println("Pai de 50 (raiz): " + (pai50 != null ? pai50.getElemento_armazenado() : "null"));
 
-        // Remoção de nó com 2 filhos
-        System.out.println("Removendo nó com 2 filhos (5):");
-        arvore.remover_elemento(5);
-        System.out.println("Varredura em largura após remoção:");
-        arvore.varredura_largura().imprimir();  // Esperado: 10 7 15 18
-        System.out.println("-------------------------");
+        // Remoção de elementos
+        System.out.println("\n--- Teste de remoção ---");
+        arvore.removerElemento(new No(20)); // nó folha
+        arvore.removerElemento(new No(30)); // nó com um filho
+        arvore.removerElemento(new No(50)); // raiz (tem dois filhos)
 
-        // Mostrando todas as varreduras finais
-        System.out.println("Varredura em PROFUNDIDADE VLR (pré-ordem):");
-        arvore.varredura_profundidade_vlr().imprimir();  // Esperado: 10 7 15 18
+        System.out.println("Árvore após remoções (in-order):");
+        imprimirEmOrdem(arvore.getRaiz());
+        System.out.println();
+    }
 
-        System.out.println("Varredura em PROFUNDIDADE LVR (em-ordem):");
-        arvore.varredura_profundidade_lvr().imprimir();  // Esperado: 7 10 15 18
-
-        System.out.println("Varredura em PROFUNDIDADE LRV (pós-ordem):");
-        arvore.varredura_profundidade_lrv().imprimir();  // Esperado: 7 18 15 10
+    // Impressão in-order para visualizar a árvore
+    public static void imprimirEmOrdem(No raiz) {
+        if (raiz != null) {
+            imprimirEmOrdem(raiz.getFilho_esquerda());
+            System.out.print(raiz.getElemento_armazenado() + " ");
+            imprimirEmOrdem(raiz.getFilho_direita());
+        }
     }
 }
